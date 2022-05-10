@@ -129,3 +129,46 @@ def run_training(net, optimizer, config, train_loader, test_loader=None):
                         torch.save(net.state_dict(), p_join(ckpt_save_folder, f"model_{eph}_best.ckpt"))
                 print(f"Epoch: {eph}/{epochs}, \t total score test: {score}, [best score: {best_score}]")
             print()
+
+
+#####################################
+######    ML USEFUL METHODS     #####
+#####################################
+
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import GridSearchCV
+
+def calc_ml_method(model, config, X, Y):
+    res = {}
+
+    scoring = config.get('scoring', 'accuracy')
+    cv = config.get('cv', 5)
+    n_jobs = config.get('n_jobs', 4)
+    
+    scores = cross_validate(model, X, Y, cv=cv, scoring=scoring, n_jobs=n_jobs)
+    res[str(scoring)] = scores
+        
+    return res
+
+def greed_searc_cv(model_class, params, config, X, Y):
+    res = {}
+
+    scoring = config.get('scoring', 'accuracy')
+    cv = config.get('cv', 5)
+    n_jobs = config.get('n_jobs', 4)
+
+    refit_ = 'accuracy' if isinstance(scoring, list) else True
+    
+    model = GridSearchCV(model_class,
+                         params,
+                         scoring=scoring,
+                         refit=refit_,
+                         cv=cv,
+                         n_jobs=n_jobs)
+    model.fit(X, Y)
+    res[f'best_{str(scoring)}_score'] = model.best_score_
+    res['best_params'] = model.best_params_
+    res['cv_results'] = model.cv_results_
+    res['best_index'] = model.best_index_
+    
+    return res    
