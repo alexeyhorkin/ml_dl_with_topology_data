@@ -17,10 +17,10 @@ import torch.nn.functional as F
 def create_dataset(folders, verbose=False, feature_nums=16):
     X_merged, Y_merged = [], []
     for folder_path in tqdm(folders):
-        X_path = p_join('..', 'data_2', folder_path, '2nd_exp_Input.txt')
-        Y_path_down = p_join('..', 'data_2', folder_path, '2nd_exp_Topology_down.txt')
-        Y_path_up = p_join('..', 'data_2', folder_path, '2nd_exp_Topology_up.txt')
-        params_path = p_join('..', 'data_2', folder_path, '2nd_exp_Parameters.txt')
+        X_path = p_join(folder_path, '2nd_exp_Input.txt')
+        Y_path_down = p_join(folder_path, '2nd_exp_Topology_down.txt')
+        Y_path_up = p_join(folder_path, '2nd_exp_Topology_up.txt')
+        params_path = p_join(folder_path, '2nd_exp_Parameters.txt')
 
         X = select_n_center_features(pd.read_csv(X_path).values, feature_nums)
         Y_down = pd.read_csv(Y_path_down).values
