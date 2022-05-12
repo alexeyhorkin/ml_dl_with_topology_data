@@ -171,4 +171,8 @@ def greed_searc_cv(model_class, params, config, X, Y):
     res['cv_results'] = model.cv_results_
     res['best_index'] = model.best_index_
     
-    return res    
+    return res
+
+def count_params(model):
+    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f'[INFO]: Model "{model.__class__.__name__}" has {pytorch_total_params} trainable parameters')
