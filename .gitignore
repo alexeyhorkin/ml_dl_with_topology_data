@@ -3,7 +3,7 @@ data*/
 *.zip
 
 # Checkpoints
-notebooks/ckpts
+*ckpts*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
