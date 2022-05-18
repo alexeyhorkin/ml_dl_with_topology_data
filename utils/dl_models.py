@@ -1,5 +1,7 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchsummary import summary
 
 import utils
 
@@ -75,8 +77,15 @@ class MlpNeLight(nn.Module):
 
 
 def main():
-    pass
+
+    mlp_model = MlpNeLight(in_features=16)
+    summary(mlp_model, (16, ), 4)
+
+    print()
+
+    cnn_model = ConvMlpNet()
+    summary(cnn_model, (1, 16, ), 4)
 
 
 if __name__ == "__main__":
-    mian()
+    main()
