@@ -16,6 +16,7 @@ jupyter = "^1.0.0"
 tqdm = "^4.64.0"
 torchvision = "^0.12.0"
 opencv-python = "^4.5.5"
+torchsummary = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 
