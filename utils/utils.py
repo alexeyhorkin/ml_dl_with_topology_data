@@ -126,7 +126,7 @@ def run_training(net, optimizer, config, train_loader, test_loader=None):
                 if score > best_score:
                     best_score = score
                     if save_ckpts:
-                        torch.save(net.state_dict(), p_join(ckpt_save_folder, f"model_{eph}_best.ckpt"))
+                        torch.save(net.state_dict(), p_join(ckpt_save_folder, f"model_best.ckpt"))
                 print(f"Epoch: {eph}/{epochs}, \t total score test: {score}, [best score: {best_score}]")
             print()
 
