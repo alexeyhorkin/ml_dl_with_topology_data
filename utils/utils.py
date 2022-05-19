@@ -1,6 +1,7 @@
 '''All useful utils here.'''
 
 import os
+import random
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -8,6 +9,21 @@ from os.path import join as p_join
 
 import torch
 import torch.nn.functional as F
+from torch.utils.data import TensorDataset
+from torch.utils.data import DataLoader
+
+
+
+def seed_all(seed=42):
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    print("[ Using Seed : ", seed, " ]")
+
 
 
 #########################################
@@ -38,6 +54,32 @@ def create_dataset(folders, verbose=False, feature_nums=16):
     if verbose:
         print('Dataset cteated!')
     return X, Y
+
+
+def create_dataloaders(X, Y, cpu_workers=2, train_bs=64, test_bs=64):
+    from sklearn.model_selection import train_test_split
+
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X, Y, test_size=0.2, random_state=42)
+
+
+    train_dataset = TensorDataset(torch.Tensor(X_train), torch.Tensor(Y_train))
+    test_dataset = TensorDataset(torch.Tensor(X_test), torch.Tensor(Y_test))
+
+    train_dataloader = DataLoader(train_dataset,
+                                  shuffle=True,
+                                  num_workers=cpu_workers,
+                                  batch_size=train_bs,
+                                  drop_last=True)
+
+    test_dataloader = DataLoader(test_dataset,
+                                 shuffle=False,
+                                 num_workers=cpu_workers,
+                                 batch_size=test_bs,
+                                 drop_last=False)
+
+    return train_dataloader, test_dataloader
+
 
 def normalize_data(X):
     mean = X.mean(0)
