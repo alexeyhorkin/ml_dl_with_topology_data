@@ -30,18 +30,32 @@ def seed_all(seed=42):
 ##      DATA PROCESSING FUNCTIONS      ##
 #########################################
 
-def create_dataset(folders, verbose=False, feature_nums=16):
+def create_dataset(folders, verbose=False, feature_nums=16, n='both'):
     X_merged, Y_merged = [], []
     for folder_path in tqdm(folders):
         X_path = p_join(folder_path, '2nd_exp_Input.txt')
         Y_path_down = p_join(folder_path, '2nd_exp_Topology_down.txt')
         Y_path_up = p_join(folder_path, '2nd_exp_Topology_up.txt')
-        params_path = p_join(folder_path, '2nd_exp_Parameters.txt')
+        _ = p_join(folder_path, '2nd_exp_Parameters.txt')
 
-        X = select_n_center_features(pd.read_csv(X_path).values, feature_nums)
+
+        values = pd.read_csv(X_path).values
+        X = select_n_center_features(values, feature_nums)
+
         Y_down = pd.read_csv(Y_path_down).values
         Y_up = pd.read_csv(Y_path_up).values
         Y = np.array([map_classes(Y_up[i], Y_down[i]) for i in range(Y_up.shape[0])])
+
+        if n == 'n':
+            mask = values[:,  -1] == -1
+        elif n == 'n+1':
+            mask = ~(values[:,  -1] == -1)
+        else:
+            mask = np.array([True] * len(values))
+
+
+        X = X[mask]
+        Y = Y[mask]
 
         X_merged.append(X)
         Y_merged.append(Y)
